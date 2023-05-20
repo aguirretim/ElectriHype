@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "650633486872",
+    "project_id": "electrihype",
+    "storage_bucket": "electrihype.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650633486872:android:07be74739ba04c2e01996d",
+        "android_client_info": {
+          "package_name": "com.timapps.electrihype"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "650633486872-2gbcbsogso9f52bctstjjjgpl7vcih5b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.timapps.electrihype",
+            "certificate_hash": "79e3834f4a42a2b1ebb64961cac15f475781d7a0"
+          }
+        },
+        {
+          "client_id": "650633486872-d15lo3icl1nrithv8t1ths43ickg9ib6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrYOU-Nv3Rb9DLAguEryfzmSjoFd3tfoU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650633486872-d15lo3icl1nrithv8t1ths43ickg9ib6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
