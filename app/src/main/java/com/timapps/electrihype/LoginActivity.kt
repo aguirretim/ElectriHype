@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult
@@ -28,6 +29,7 @@ class LoginActivity : AppCompatActivity() {
         val btn_login: Button = binding.btnLogin
         val et_login_email: EditText = binding.etLoginEmail
         val et_login_password: EditText = binding.editTextTextPassword
+        val tv_forgot_password: TextView = binding.tvForgotPassword
 
         btn_login.setOnClickListener{
             // Handle click event for btnRegister
@@ -80,6 +82,11 @@ class LoginActivity : AppCompatActivity() {
         btn_sign_up.setOnClickListener{
              startActivity(Intent(this@LoginActivity,RegisterActivity::class.java))
              finish()
+        }
+
+        tv_forgot_password.setOnClickListener{
+            startActivity(Intent(this@LoginActivity,ForgotPasswordActivity::class.java))
+
         }
     }
 }
