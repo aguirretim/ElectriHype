@@ -89,4 +89,17 @@ class LoginActivity : AppCompatActivity() {
 
         }
     }
+
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.putExtra("user_id", FirebaseAuth.getInstance().currentUser!!.uid)
+            intent.putExtra("email_id",  FirebaseAuth.getInstance().currentUser!!.email)
+            startActivity(intent)
+        }
+    }
 }

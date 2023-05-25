@@ -28,16 +28,18 @@ class MainFeedActivity : AppCompatActivity() {
 
         data.add(content2)
         data.add(content1)
-
         data.add(content3)
+       
+
 
         val adapter = FeedPostAdapter(data)
         rv_main_Feed.adapter = adapter
 
-// Create a LinearLayoutManager
+        // Create a LinearLayoutManager
         val layoutManager = LinearLayoutManager(this)
 
-// Set the layout manager to the RecyclerView
+
+        // Set the layout manager to the RecyclerView
         rv_main_Feed.layoutManager = layoutManager
 
 

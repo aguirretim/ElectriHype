@@ -13,17 +13,16 @@ class FeedPostAdapter (
     private val mList: List<FeedPostDataModel>
 ) : RecyclerView.Adapter<FeedPostAdapter.ViewHolder>() {
 
-    // create new views
+    // Create new views for the RecyclerView
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // inflates the card_view_design view
-        // that is used to hold list item
+        // Inflate the card_view_design view that will hold each list item
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.main_feed_item_recycleview_design, parent, false)
 
         return ViewHolder(view)
     }
 
-    // binds the list items to a view
+    // Bind the data to the views in each list item
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val mainContent = mList[position]
 
@@ -43,9 +42,18 @@ class FeedPostAdapter (
         private val imageView: ImageView = itemView.findViewById(R.id.iv_image_main_content)
         private val usernameTextView: TextView = itemView.findViewById(R.id.tv_username)
 
+        // Bind the data to the views in the ViewHolder
         fun bind(mainContent: FeedPostDataModel) {
             numberOfLikesTextView.text = mainContent.numberOfLikes.toString()
             mainContentTextView.text = mainContent.mainContentText
+
+            // Set the visibility of the ImageView based on the imageResId
+            if (mainContent.imageResId != 0) {
+                imageView.visibility = View.VISIBLE
+                imageView.setImageResource(mainContent.imageResId)
+            } else {
+                imageView.visibility = View.GONE
+            }
             imageView.setImageResource(mainContent.imageResId)
             usernameTextView.text = mainContent.username
 
