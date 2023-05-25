@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         val tv_email_id: TextView = binding.tvEmailId
         val btn_logout: Button = binding.btnLogout
 
-
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
@@ -33,6 +32,11 @@ class MainActivity : AppCompatActivity() {
             // Logout from app
             FirebaseAuth.getInstance().signOut()
             startActivity(Intent(this@MainActivity,LoginActivity::class.java))
+            finish()
+        }
+
+        tv_user_id.setOnClickListener{
+            startActivity(Intent(this@MainActivity,MainFeedActivity::class.java))
             finish()
         }
 
