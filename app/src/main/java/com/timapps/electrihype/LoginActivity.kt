@@ -32,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
         val tv_forgot_password: TextView = binding.tvForgotPassword
 
         btn_login.setOnClickListener{
+
             // Handle click event for btnRegister
             when{
 

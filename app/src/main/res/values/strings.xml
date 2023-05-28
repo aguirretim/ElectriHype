@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ElectriHype</string>
+    <string name="create_post_name">Create Hype</string>
 </resources>

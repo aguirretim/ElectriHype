@@ -24,15 +24,17 @@ class RegisterActivity : AppCompatActivity() {
 
 
         val textView2: TextView = binding.textView2
+
+
         val tilRegisterEmail: EditText = binding.tilRegisterEmail
         val tilRegisterPassword: EditText = binding.tilRegisterPassword
         val btnRegister: Button = binding.btnRegister
         val tvLogin: TextView = binding.tvLogin
 
 
-
         tilRegisterEmail.setOnClickListener {
             // Handle click event for tilRegisterEmail
+
         }
 
         tilRegisterPassword.setOnClickListener {

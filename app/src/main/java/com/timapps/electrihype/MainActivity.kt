@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         val tv_email_id: TextView = binding.tvEmailId
         val btn_logout: Button = binding.btnLogout
 
+
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
