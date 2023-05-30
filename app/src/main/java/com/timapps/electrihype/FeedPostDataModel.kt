@@ -1,6 +1,9 @@
 package com.timapps.electrihype
+import android.os.Parcel
+import android.os.Parcelable
 
-data class FeedPostDataModel (
+data class FeedPostDataModel(
+
     /**************************************
      * initialized Variables for Object.  *
      **************************************/
@@ -9,49 +12,39 @@ data class FeedPostDataModel (
     var mainContentText: String,
     var imageResId: Int,
     var username: String
+) : Parcelable {
 
-) {
     /****************************
      * Constructor for Object.  *
      ****************************/
-
     constructor() : this(0, "", 0, "")
 
-    /************************
-     * Getters and setters  *
-     ************************/
+    // Parcelable implementation
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readString()!!,
+        parcel.readInt(),
+        parcel.readString()!!
+    )
 
-
-    /*fun getNumberOfLikes(): Int {
-        return numberOfLikes
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(numberOfLikes)
+        parcel.writeString(mainContentText)
+        parcel.writeInt(imageResId)
+        parcel.writeString(username)
     }
 
-    fun setNumberOfLikes(likes: Int) {
-        numberOfLikes = likes
+    override fun describeContents(): Int {
+        return 0
     }
 
-    fun getMainContentText(): String {
-        return mainContentText
-    }
+    companion object CREATOR : Parcelable.Creator<FeedPostDataModel> {
+        override fun createFromParcel(parcel: Parcel): FeedPostDataModel {
+            return FeedPostDataModel(parcel)
+        }
 
-    fun setMainContentText(contentText: String) {
-        mainContentText = contentText
+        override fun newArray(size: Int): Array<FeedPostDataModel?> {
+            return arrayOfNulls(size)
+        }
     }
-
-    fun getImageResId(): Int {
-        return imageResId
-    }
-
-    fun setImageResId(resId: Int) {
-        imageResId = resId
-    }
-
-    fun getUsername(): String {
-        return username
-    }
-
-    fun setUsername(name: String) {
-        username = name
-    }*/
 }
-

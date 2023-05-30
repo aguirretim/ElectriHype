@@ -1,26 +1,58 @@
 package com.timapps.electrihype
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.service.controls.actions.FloatAction
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.timapps.electrihype.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
+
 import com.timapps.electrihype.databinding.ActivityMainFeedBinding
 
+
 class MainFeedActivity : AppCompatActivity() {
+    private lateinit var adapter: FeedPostAdapter
+
+    companion object {
+        private const val REQUEST_CREATE_POST = 1
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CREATE_POST && resultCode == Activity.RESULT_OK) {
+            val newPost = data?.getParcelableExtra<FeedPostDataModel>("newPost")
+            if (newPost != null) {
+                // Handle the new post object as needed
+                // For example, you can update the UI or perform any necessary operations
+                // Add the new post to the data list
+                adapter.addData(newPost)
+                adapter.notifyDataSetChanged()
+                Toast.makeText(this, "Magical data added", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         val binding = ActivityMainFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val user_id = FirebaseAuth.getInstance().currentUser!!.uid
+        val email_id = FirebaseAuth.getInstance().currentUser?.email
+
         val rv_main_Feed: RecyclerView = binding.rvMainFeed
         val fab_create_post: FloatingActionButton = binding.fabCreatePost
+
         val data = ArrayList<FeedPostDataModel>()
 
         // Generate sample data
@@ -34,7 +66,7 @@ class MainFeedActivity : AppCompatActivity() {
         data.add(content1)
         data.add(content3)
 
-        val adapter = FeedPostAdapter(data)
+        adapter = FeedPostAdapter(data)
         rv_main_Feed.adapter = adapter
 
         // Create a LinearLayoutManager
@@ -43,9 +75,28 @@ class MainFeedActivity : AppCompatActivity() {
         // Set the layout manager to the RecyclerView
         rv_main_Feed.layoutManager = layoutManager
 
+
+
         fab_create_post.setOnClickListener{
-            startActivity(Intent(this@MainFeedActivity, CreatePostActivity::class.java))
+            intent = Intent(this@MainFeedActivity, CreatePostActivity::class.java)
+            intent.putExtra("user_id", user_id)
+            intent.putExtra("email_id", email_id)
+            startActivityForResult(intent, REQUEST_CREATE_POST)
         }
 
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
 }

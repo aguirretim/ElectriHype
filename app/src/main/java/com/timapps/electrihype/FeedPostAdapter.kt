@@ -10,8 +10,15 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 
 class FeedPostAdapter (
-    private val mList: List<FeedPostDataModel>
+    private var mList: MutableList<FeedPostDataModel>
 ) : RecyclerView.Adapter<FeedPostAdapter.ViewHolder>() {
+
+    // Update the data list
+    fun updateData(newList: List<FeedPostDataModel>) {
+        mList.clear()
+        mList.addAll(newList)
+    }
+
 
     // Create new views for the RecyclerView
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -20,11 +27,13 @@ class FeedPostAdapter (
             .inflate(R.layout.main_feed_item_recycleview_design, parent, false)
 
         return ViewHolder(view)
+
+
     }
 
     // Bind the data to the views in each list item
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val mainContent = mList[position]
+        val mainContent = mList[mList.size - position - 1]
 
         holder.bind(mainContent)
 
@@ -41,6 +50,8 @@ class FeedPostAdapter (
         private val mainContentTextView: TextView = itemView.findViewById(R.id.tv_text_main_content)
         private val imageView: ImageView = itemView.findViewById(R.id.iv_image_main_content)
         private val usernameTextView: TextView = itemView.findViewById(R.id.tv_username)
+
+
 
         // Bind the data to the views in the ViewHolder
         fun bind(mainContent: FeedPostDataModel) {
@@ -60,4 +71,10 @@ class FeedPostAdapter (
         }
 
     }
+
+    fun addData(post: FeedPostDataModel) {
+        mList.add(post)
+    }
+
+
 }
