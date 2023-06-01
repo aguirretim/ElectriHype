@@ -1,5 +1,4 @@
 package com.timapps.electrihype
-
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +14,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 
 import com.timapps.electrihype.databinding.ActivityMainFeedBinding
-
-
 class MainFeedActivity : AppCompatActivity() {
     private lateinit var adapter: FeedPostAdapter
 
@@ -61,7 +58,6 @@ class MainFeedActivity : AppCompatActivity() {
         val content3 = FeedPostDataModel(51, "In the world of Apex Legends, I'm the champion. No one can defeat me, I reign", 0, "@apexking")
 
         // Add sample data to the list
-
         data.add(content2)
         data.add(content1)
         data.add(content3)
@@ -75,28 +71,11 @@ class MainFeedActivity : AppCompatActivity() {
         // Set the layout manager to the RecyclerView
         rv_main_Feed.layoutManager = layoutManager
 
-
-
         fab_create_post.setOnClickListener{
             intent = Intent(this@MainFeedActivity, CreatePostActivity::class.java)
             intent.putExtra("user_id", user_id)
             intent.putExtra("email_id", email_id)
             startActivityForResult(intent, REQUEST_CREATE_POST)
         }
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
 }

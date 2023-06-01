@@ -1,12 +1,11 @@
 package com.timapps.electrihype
 
-import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 
 class FeedPostAdapter (
@@ -67,7 +66,22 @@ class FeedPostAdapter (
             }
             imageView.setImageResource(mainContent.imageResId)
             usernameTextView.text = mainContent.username
+        }
 
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val selectedItem = mList[mList.size - position - 1]
+                    // Handle item selection here, e.g., start a new activity with the selected item text
+                    val intent = Intent(itemView.context, PostDetailViewActivity::class.java)
+                    intent.putExtra("selectedItemText", selectedItem.mainContentText)
+                    intent.putExtra("selectedItemUsername", selectedItem.username)
+                    intent.putExtra("selectedItemLikes", selectedItem.numberOfLikes)
+                    intent.putExtra("selectedItemImageId", selectedItem.imageResId)
+                    itemView.context.startActivity(intent)
+                }
+            }
         }
 
     }
