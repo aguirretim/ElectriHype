@@ -1,5 +1,6 @@
 package com.timapps.electrihype
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class PostDetailViewActivity : AppCompatActivity() {
 
@@ -21,7 +23,7 @@ class PostDetailViewActivity : AppCompatActivity() {
         val selectedItemUsername = intent.getStringExtra("selectedItemUsername")
         val selectedItemLikes = intent.getIntExtra("selectedItemLikes", 0)
         val selectedItemImageId = intent.getIntExtra("selectedItemImageId", 0)
-
+        val fabCreateComment: FloatingActionButton = findViewById(R.id.fab_create_comment)
         // Find the views in the layout
         val postTextView: TextView = findViewById(R.id.tv_post_text)
         val authorTextView: TextView = findViewById(R.id.tv_post_author)
@@ -53,5 +55,16 @@ class PostDetailViewActivity : AppCompatActivity() {
 
         // Set the layout manager for the RecyclerView
         commentRecyclerView.layoutManager = LinearLayoutManager(this)
+
+
+        fabCreateComment.setOnClickListener {
+            // Handle the click event
+            val intent = Intent(this, CreateCommentActivity::class.java)
+            startActivity(intent)
+        }
+
+
     }
+
+
 }
