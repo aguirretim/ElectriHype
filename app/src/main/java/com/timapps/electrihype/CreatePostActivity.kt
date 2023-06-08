@@ -39,7 +39,10 @@ class CreatePostActivity : AppCompatActivity() {
         val email_id = intent.getStringExtra("email_id")
         if (email_id != null) {
 
-            tvUsername.text=(if (email_id.contains("@")) "@"+email_id.substringBefore("@") else email_id
+            tvUsername.text=(
+                    if (email_id.contains("@"))
+                "@"+email_id.substringBefore("@")
+            else email_id
                     )
             user = tvUsername.text as String
 

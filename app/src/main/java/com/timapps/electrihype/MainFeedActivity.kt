@@ -21,22 +21,7 @@ class MainFeedActivity : AppCompatActivity() {
         private const val REQUEST_CREATE_POST = 1
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_CREATE_POST && resultCode == Activity.RESULT_OK) {
-            val newPost = data?.getParcelableExtra<FeedPostDataModel>("newPost")
-            if (newPost != null) {
-                // Handle the new post object as needed
-                // For example, you can update the UI or perform any necessary operations
-                // Add the new post to the data list
-                adapter.addData(newPost)
-                adapter.notifyDataSetChanged()
-                Toast.makeText(this, "Magical data added", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -76,6 +61,22 @@ class MainFeedActivity : AppCompatActivity() {
             intent.putExtra("user_id", user_id)
             intent.putExtra("email_id", email_id)
             startActivityForResult(intent, REQUEST_CREATE_POST)
+        }
+    }
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CREATE_POST && resultCode == Activity.RESULT_OK) {
+            val newPost = data?.getParcelableExtra<FeedPostDataModel>("newPost")
+            if (newPost != null) {
+                // Handle the new post object as needed
+                // For example, you can update the UI or perform any necessary operations
+                // Add the new post to the data list
+                adapter.addData(newPost)
+                adapter.notifyDataSetChanged()
+                Toast.makeText(this, "Magical data added", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

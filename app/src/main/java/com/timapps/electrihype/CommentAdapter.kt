@@ -1,5 +1,6 @@
 package com.timapps.electrihype
 
+import CommentDataModel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ class CommentAdapter(private val commentList: MutableList<CommentDataModel>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val comment = commentList[position]
+        val comment = commentList[commentList.size - 1 - position]
         holder.bind(comment)
     }
 
@@ -33,4 +34,8 @@ class CommentAdapter(private val commentList: MutableList<CommentDataModel>) :
             authorTextView.text = comment.author
         }
     }
+    fun addData(newComment: CommentDataModel) {
+        commentList.add(newComment)
+    }
+
 }

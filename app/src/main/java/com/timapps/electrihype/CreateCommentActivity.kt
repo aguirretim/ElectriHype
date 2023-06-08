@@ -1,20 +1,34 @@
 package com.timapps.electrihype
 
+import CommentDataModel
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuth
 
 class CreateCommentActivity : AppCompatActivity() {
+
+    private lateinit var textInputEditText: TextInputEditText
+    private lateinit var user: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_comment)
 
+        val email_id = FirebaseAuth.getInstance().currentUser?.email
 
+        textInputEditText = findViewById(R.id.et_comment_text_edit)
 
-
-
+        if (email_id != null) {
+            if (email_id.contains("@"))
+                user = "@" + email_id.substringBefore("@")
+        }
 
         supportActionBar?.apply {
             // Enable custom view for the action bar
@@ -25,7 +39,7 @@ class CreateCommentActivity : AppCompatActivity() {
             // Get reference to the TextView in the custom action bar layout
             val appHeaderTextView: TextView = customView.findViewById(R.id.tv_app_header)
 
-            appHeaderTextView.setText("Rehype")
+            appHeaderTextView.text = "Rehype"
             // Customize the TextView as needed
             // appHeaderTextView.setTextColor(...)
             // appHeaderTextView.setTextSize(...)
@@ -35,17 +49,50 @@ class CreateCommentActivity : AppCompatActivity() {
             appHeaderTextView.setOnClickListener {
                 // Handle click event
             }
-
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.header_menu, menu)
         val menuItem: MenuItem = menu.findItem(R.id.action_button1)
-        menuItem.setTitle("Post Your Comment")
+        menuItem.title = "Post Your Comment"
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                // Handle back button click here
+                onBackPressed()
+                return true
+            }
+
+
+
+            R.id.action_button1 -> {
+                // Handle button 1 click
+                val enteredText = textInputEditText.text?.toString()
+
+                if (!enteredText.isNullOrEmpty()) {
+                    val newComment = CommentDataModel(enteredText, user)
+
+                    Toast.makeText(this, "$user Comment created successfully", Toast.LENGTH_SHORT).show()
+
+                    val intent = Intent()
+                    intent.putExtra("newComment", newComment) // Send the newComment object as an extra
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+
+                } else {
+                    Toast.makeText(this, "Please enter some text", Toast.LENGTH_SHORT).show()
+                }
+                return true
+            }
+
+            // Handle other menu items if needed
+
+            else -> return super.onOptionsItemSelected(item)
+        }
+
+    }
 }
