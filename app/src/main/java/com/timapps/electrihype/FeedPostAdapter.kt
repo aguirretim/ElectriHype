@@ -56,16 +56,17 @@ class FeedPostAdapter (
         fun bind(mainContent: FeedPostDataModel) {
             numberOfLikesTextView.text = mainContent.numberOfLikes.toString()
             mainContentTextView.text = mainContent.mainContentText
+            usernameTextView.text = mainContent.username
 
             // Set the visibility of the ImageView based on the imageResId
-            if (mainContent.imageResId != 0) {
+            if (mainContent.imageResId != null) {
                 imageView.visibility = View.VISIBLE
-                imageView.setImageResource(mainContent.imageResId)
+                imageView.setImageURI(mainContent.imageResId)
             } else {
                 imageView.visibility = View.GONE
             }
-            imageView.setImageResource(mainContent.imageResId)
-            usernameTextView.text = mainContent.username
+            imageView.setImageURI(mainContent.imageResId)
+
         }
 
         init {
