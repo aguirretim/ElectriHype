@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,6 +32,9 @@ class PostDetailViewActivity : AppCompatActivity() {
         val selectedItemLikes = intent.getIntExtra("selectedItemLikes", 0)
         val selectedItemImageId = intent.getIntExtra("selectedItemImageId", 0)
         val fabCreateComment: FloatingActionButton = findViewById(R.id.fab_create_comment)
+        // Retrieve the image URI from the extras
+        val selectedItemImageUriString = intent.getStringExtra("selectedItemImageUri")
+        val selectedItemImageUri = selectedItemImageUriString?.toUri()
 
         // Find the views in the layout
         val postTextView: TextView = findViewById(R.id.tv_post_text)
@@ -44,9 +48,10 @@ class PostDetailViewActivity : AppCompatActivity() {
         authorTextView.text = selectedItemUsername
         likeCountTextView.text = selectedItemLikes.toString()
 
-        if (selectedItemImageId != 0) {
+        if (selectedItemImageUri != null) {
+            // Display the image using the URI
             imageView.visibility = View.VISIBLE
-            imageView.setImageResource(selectedItemImageId)
+            imageView.setImageURI(selectedItemImageUri)
         } else {
             imageView.visibility = View.GONE
         }

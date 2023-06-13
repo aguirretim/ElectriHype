@@ -1,6 +1,7 @@
 package com.timapps.electrihype
 
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 class FeedPostAdapter (
     private var mList: MutableList<FeedPostDataModel>
 ) : RecyclerView.Adapter<FeedPostAdapter.ViewHolder>() {
+
+
 
     // Update the data list
     fun updateData(newList: List<FeedPostDataModel>) {
@@ -45,6 +48,9 @@ class FeedPostAdapter (
 
     // Holds the views for adding  image and text
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private var imageUri: Uri? = null
+
         private val numberOfLikesTextView: TextView = itemView.findViewById(R.id.tv_number_of_likes)
         private val mainContentTextView: TextView = itemView.findViewById(R.id.tv_text_main_content)
         private val imageView: ImageView = itemView.findViewById(R.id.iv_image_main_content)
@@ -58,16 +64,19 @@ class FeedPostAdapter (
             mainContentTextView.text = mainContent.mainContentText
             usernameTextView.text = mainContent.username
 
+            imageUri = mainContent.imageResId
+
+
+
             // Set the visibility of the ImageView based on the imageResId
-            if (mainContent.imageResId != null) {
+            if (imageUri != null) {
                 imageView.visibility = View.VISIBLE
-                imageView.setImageURI(mainContent.imageResId)
+                imageView.setImageURI(imageUri)
             } else {
                 imageView.visibility = View.GONE
             }
-            imageView.setImageURI(mainContent.imageResId)
-
         }
+
 
         init {
             itemView.setOnClickListener {
@@ -79,7 +88,7 @@ class FeedPostAdapter (
                     intent.putExtra("selectedItemText", selectedItem.mainContentText)
                     intent.putExtra("selectedItemUsername", selectedItem.username)
                     intent.putExtra("selectedItemLikes", selectedItem.numberOfLikes)
-                    intent.putExtra("selectedItemImageId", selectedItem.imageResId)
+                    intent.putExtra("selectedItemImageUri", imageUri?.toString())
                     itemView.context.startActivity(intent)
                 }
             }
