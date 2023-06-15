@@ -15,6 +15,8 @@ import com.google.firebase.auth.FirebaseAuth
 import java.net.URI
 
 import com.timapps.electrihype.databinding.ActivityMainFeedBinding
+import java.util.UUID
+
 class MainFeedActivity : AppCompatActivity() {
     private lateinit var adapter: FeedPostAdapter
 
@@ -47,11 +49,11 @@ class MainFeedActivity : AppCompatActivity() {
         val drawableResId = R.drawable.pokehype
         val drawableUri = getDrawableUri(this, drawableResId)
 
-
+        val genratedId = UUID.randomUUID().toString()
         // Generate sample data
-        val content1 = FeedPostDataModel(122, "Why is it everytime I wake up and go to the club. There is always some drama before I go", drawableUri, "@lilpikatest")
-        val content2 = FeedPostDataModel(75, "I'm just a player, I'm not a rapper. But when it comes to gaming, I'm a master", null, "@gamerpro")
-        val content3 = FeedPostDataModel(51, "In the world of Apex Legends, I'm the champion. No one can defeat me, I reign", null, "@apexking")
+        val content1 = FeedPostDataModel(genratedId,122, "Why is it everytime I wake up and go to the club. There is always some drama before I go", drawableUri, "@lilpikatest")
+        val content2 = FeedPostDataModel(genratedId,75, "I'm just a player, I'm not a rapper. But when it comes to gaming, I'm a master", null, "@gamerpro")
+        val content3 = FeedPostDataModel(genratedId,51, "In the world of Apex Legends, I'm the champion. No one can defeat me, I reign", null, "@apexking")
 
         // Add sample data to the list
         data.add(content2)

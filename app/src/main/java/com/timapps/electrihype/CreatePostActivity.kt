@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import com.timapps.electrihype.databinding.ActivityCreatePostBinding
+import java.util.UUID
 
 
 class CreatePostActivity : AppCompatActivity() {
@@ -102,7 +103,8 @@ class CreatePostActivity : AppCompatActivity() {
                 val enteredText = textInputEditText.text?.toString()
 
                 if (!enteredText.isNullOrEmpty()) {
-                    val newPost = FeedPostDataModel(0, enteredText, selectedImageUri, user)
+                    val genratedId = UUID.randomUUID().toString()
+                    val newPost = FeedPostDataModel(genratedId,0, enteredText, selectedImageUri, user)
 
                     Toast.makeText(this, "$user Post created successfully", Toast.LENGTH_SHORT).show()
 

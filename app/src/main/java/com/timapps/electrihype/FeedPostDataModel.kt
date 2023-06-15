@@ -1,27 +1,22 @@
 package com.timapps.electrihype
+
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 
 data class FeedPostDataModel(
-
-    /**************************************
-     * initialized Variables for Object.  *
-     **************************************/
-
+    var id: String, 
     var numberOfLikes: Int,
     var mainContentText: String,
     var imageResId: Uri?,
     var username: String
 ) : Parcelable {
 
-    /****************************
-     * Constructor for Object.  *
-     ****************************/
-    constructor() : this(0, "", null, "")
+    constructor() : this("", 0, "", null, "")
 
     // Parcelable implementation
     constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
         parcel.readInt(),
         parcel.readString()!!,
         parcel.readParcelable(Uri::class.java.classLoader),
@@ -29,6 +24,7 @@ data class FeedPostDataModel(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
         parcel.writeInt(numberOfLikes)
         parcel.writeString(mainContentText)
         parcel.writeParcelable(imageResId, flags)
