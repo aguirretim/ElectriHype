@@ -13,7 +13,12 @@ class FeedPostAdapter (
     private var mList: MutableList<FeedPostDataModel>
 ) : RecyclerView.Adapter<FeedPostAdapter.ViewHolder>() {
 
-
+    // Update the data list
+    fun setData(posts: List<FeedPostDataModel>) {
+        mList.clear()
+        mList.addAll(posts)
+        notifyDataSetChanged()
+    }
 
     // Update the data list
     fun updateData(newList: List<FeedPostDataModel>) {
@@ -98,6 +103,7 @@ class FeedPostAdapter (
 
     fun addData(post: FeedPostDataModel) {
         mList.add(post)
+        notifyDataSetChanged()
     }
 
 

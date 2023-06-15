@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import java.net.URI
+import com.google.firebase.firestore.FirebaseFirestore
 
 import com.timapps.electrihype.databinding.ActivityMainFeedBinding
 import java.util.UUID
@@ -25,11 +26,15 @@ class MainFeedActivity : AppCompatActivity() {
         private val PICK_IMAGE_REQUEST = 1
     }
 
-
+    val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
+
+
+
         val binding = ActivityMainFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -60,8 +65,11 @@ class MainFeedActivity : AppCompatActivity() {
         data.add(content1)
         data.add(content3)
 
-        adapter = FeedPostAdapter(data)
+        adapter = FeedPostAdapter(ArrayList())
         rv_main_Feed.adapter = adapter
+
+        // Call the function to fetch posts from Firestore
+        fetchPostsFromFirestore()
 
         // Create a LinearLayoutManager
         val layoutManager = LinearLayoutManager(this)
@@ -75,7 +83,10 @@ class MainFeedActivity : AppCompatActivity() {
             intent.putExtra("email_id", email_id)
             startActivityForResult(intent, REQUEST_CREATE_POST)
         }
+
     }
+
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -83,19 +94,43 @@ class MainFeedActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CREATE_POST && resultCode == Activity.RESULT_OK) {
             val newPost = data?.getParcelableExtra<FeedPostDataModel>("newPost")
             if (newPost != null) {
-                // Handle the new post object as needed
-                // For example, you can update the UI or perform any necessary operations
-                // Add the new post to the data list
+                // Add the new post to Firestore
+                db.collection("posts")
+                    .add(newPost)
+                    .addOnSuccessListener { documentReference ->
+                        // Handle success
+                        val postId = documentReference.id
+                        Toast.makeText(this, "Post added with ID: $postId", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { e ->
+                        // Handle error
+                        Toast.makeText(this, "Failed to add post: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+
+                // Add the new post to the adapter
                 adapter.addData(newPost)
                 adapter.notifyDataSetChanged()
                 Toast.makeText(this, "Magical data added", Toast.LENGTH_SHORT).show()
-
             }
         }
     }
 
-
-
-
+    private fun fetchPostsFromFirestore() {
+        db.collection("posts")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val posts = ArrayList<FeedPostDataModel>()
+                for (document in querySnapshot.documents) {
+                    val post = document.toObject(FeedPostDataModel::class.java)
+                    post?.let {
+                        posts.add(it)
+                    }
+                }
+                adapter.setData(posts)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to fetch posts: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
 
 }
