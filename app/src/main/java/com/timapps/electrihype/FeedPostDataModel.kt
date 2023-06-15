@@ -5,7 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class FeedPostDataModel(
-    var id: String, 
+    var id: String,
     var numberOfLikes: Int,
     var mainContentText: String,
     var imageResId: Uri?,
