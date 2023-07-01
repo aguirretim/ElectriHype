@@ -13,10 +13,12 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.firestore.FirebaseFirestore
 
 class PostDetailViewActivity : AppCompatActivity() {
 
     private lateinit var adapter: CommentAdapter
+    private lateinit var postId: String
 
     companion object {
         private const val REQUEST_CREATE_COMMENT = 1
@@ -25,6 +27,9 @@ class PostDetailViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_detail_view)
+
+        // Retrieve the data passed from the previous activity
+        postId = intent.getStringExtra("selectedItemID") ?: ""
 
         // Retrieve the data passed from the previous activity
         val selectedItemText = intent.getStringExtra("selectedItemText")
@@ -58,10 +63,7 @@ class PostDetailViewActivity : AppCompatActivity() {
 
         // Create a sample comment list (replace with your actual data)
         val commentList = mutableListOf<CommentDataModel>(
-            CommentDataModel("Oh yup i know what you mean da club be popin but itws always a struggle", "@PikaProTest"),
-            CommentDataModel("Stop complaining at least you be getting to hit the club up.", "@PikaWilson"),
-            CommentDataModel("You guys are all nerds you should know the club is for suckers", "@Jigglypuff23")
-        )
+             )
 
         // Create the comment adapter and set it to the RecyclerView
         adapter = CommentAdapter(commentList as MutableList<CommentDataModel>)
@@ -73,12 +75,18 @@ class PostDetailViewActivity : AppCompatActivity() {
         fabCreateComment.setOnClickListener {
             // Handle the click event
             val intent = Intent(this, CreateCommentActivity::class.java)
+
+            intent.putExtra("selectedItemID", postId)
+
             startActivityForResult(intent, REQUEST_CREATE_COMMENT)
+
         }
 
-
+        // Fetch comments from Firestore and update the adapter
+        fetchCommentsFromFirestore()
 
     }
+
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -92,9 +100,29 @@ class PostDetailViewActivity : AppCompatActivity() {
                 // Add the new comment to the data list
                 adapter.addData(newComment)
                 adapter.notifyDataSetChanged()
-                Toast.makeText(this, "Comment created successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    "Comment created successfully", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+    private fun fetchCommentsFromFirestore() {
+        val commentsRef = FirebaseFirestore.getInstance().collection("comments")
+        val query = commentsRef.whereEqualTo("id", postId)
+
+        query.get()
+            .addOnSuccessListener { querySnapshot ->
+                val comments = mutableListOf<CommentDataModel>()
+                for (document in querySnapshot.documents) {
+                    val comment = document.toObject(CommentDataModel::class.java)
+                    comment?.let {
+                        comments.add(it)
+                    }
+                }
+                adapter.setComments(comments)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to fetch comments: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
 }

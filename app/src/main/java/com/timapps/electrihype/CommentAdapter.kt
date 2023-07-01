@@ -38,4 +38,10 @@ class CommentAdapter(private val commentList: MutableList<CommentDataModel>) :
         commentList.add(newComment)
     }
 
+    fun setComments(newComments: List<CommentDataModel>) {
+        commentList.clear()
+        commentList.addAll(newComments)
+        notifyDataSetChanged()
+    }
+
 }

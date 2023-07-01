@@ -26,35 +26,39 @@ class MainFeedActivity : AppCompatActivity() {
         private val PICK_IMAGE_REQUEST = 1
     }
 
+    // Firebase Firestore instance
     val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
-
-
-
         val binding = ActivityMainFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Get current user information
         val user_id = FirebaseAuth.getInstance().currentUser!!.uid
         val email_id = FirebaseAuth.getInstance().currentUser?.email
 
+        // Initialize RecyclerView and FloatingActionButton
         val rv_main_Feed: RecyclerView = binding.rvMainFeed
         val fab_create_post: FloatingActionButton = binding.fabCreatePost
 
+        // Initialize data list
         val data = ArrayList<FeedPostDataModel>()
 
+        // Utility function to get Uri from drawable resource ID
         fun getDrawableUri(context: Context, drawableResId: Int): Uri? {
             val drawableUriString = "android.resource://${context.packageName}/$drawableResId"
             return Uri.parse(drawableUriString)
         }
 
+        // Example drawable resource ID and Uri
         val drawableResId = R.drawable.pokehype
         val drawableUri = getDrawableUri(this, drawableResId)
 
         val genratedId = UUID.randomUUID().toString()
+
         // Generate sample data
         val content1 = FeedPostDataModel(genratedId,122, "Why is it everytime I wake up and go to the club. There is always some drama before I go", drawableUri, "@lilpikatest")
         val content2 = FeedPostDataModel(genratedId,75, "I'm just a player, I'm not a rapper. But when it comes to gaming, I'm a master", null, "@gamerpro")
@@ -65,6 +69,7 @@ class MainFeedActivity : AppCompatActivity() {
         data.add(content1)
         data.add(content3)
 
+        // Initialize adapter with empty list
         adapter = FeedPostAdapter(ArrayList())
         rv_main_Feed.adapter = adapter
 
@@ -78,12 +83,12 @@ class MainFeedActivity : AppCompatActivity() {
         rv_main_Feed.layoutManager = layoutManager
 
         fab_create_post.setOnClickListener{
+            // Start CreatePostActivity for result
             intent = Intent(this@MainFeedActivity, CreatePostActivity::class.java)
             intent.putExtra("user_id", user_id)
             intent.putExtra("email_id", email_id)
             startActivityForResult(intent, REQUEST_CREATE_POST)
         }
-
     }
 
 

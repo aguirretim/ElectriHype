@@ -11,19 +11,29 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class CreateCommentActivity : AppCompatActivity() {
 
     private lateinit var textInputEditText: TextInputEditText
     private lateinit var user: String
+    private lateinit var postId: String
+    private val db = FirebaseFirestore.getInstance()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_comment)
 
+        // Retrieve the data passed from the previous activity
+        postId = intent.getStringExtra("selectedItemID") ?: ""
+
         val email_id = FirebaseAuth.getInstance().currentUser?.email
 
         textInputEditText = findViewById(R.id.et_comment_text_edit)
+
+
+
 
         if (email_id != null) {
             if (email_id.contains("@"))
@@ -73,10 +83,21 @@ class CreateCommentActivity : AppCompatActivity() {
                 // Handle button 1 click
                 val enteredText = textInputEditText.text?.toString()
 
-                if (!enteredText.isNullOrEmpty()) {
-                    val newComment = CommentDataModel(enteredText, user)
 
-                    Toast.makeText(this, "$user Comment created successfully", Toast.LENGTH_SHORT).show()
+                if (!enteredText.isNullOrEmpty()) {
+
+                    val newComment = CommentDataModel(postId,enteredText, user)
+                    db.collection("comments")
+                        .add(newComment)
+                        .addOnSuccessListener { documentReference ->
+                            // Handle success
+                            val commentId = documentReference.id
+                            Toast.makeText(this, "Comment added with ID: $commentId", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener { e ->
+                            // Handle error
+                            Toast.makeText(this, "Failed to add comment: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
 
                     val intent = Intent()
                     intent.putExtra("newComment", newComment) // Send the newComment object as an extra

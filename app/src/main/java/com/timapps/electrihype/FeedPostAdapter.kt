@@ -91,6 +91,7 @@ class FeedPostAdapter (
                     // Handle item selection here, e.g., start a new activity with the selected item text
                     val intent = Intent(itemView.context, PostDetailViewActivity::class.java)
                     intent.putExtra("selectedItemText", selectedItem.mainContentText)
+                    intent.putExtra("selectedItemID", selectedItem.id)
                     intent.putExtra("selectedItemUsername", selectedItem.username)
                     intent.putExtra("selectedItemLikes", selectedItem.numberOfLikes)
                     intent.putExtra("selectedItemImageUri", imageUri?.toString())
