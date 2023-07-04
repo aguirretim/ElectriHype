@@ -3,13 +3,16 @@ package com.timapps.electrihype
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import java.util.Date
 
 data class FeedPostDataModel(
     var id: String,
     var numberOfLikes: Int,
     var mainContentText: String,
     var imageResId: Uri?,
-    var username: String
+    var username: String,
+    val date: Date = Date() // Add the date field with a default value of the current date
+
 ) : Parcelable {
 
     constructor() : this("", 0, "", null, "")
@@ -20,7 +23,8 @@ data class FeedPostDataModel(
         parcel.readInt(),
         parcel.readString()!!,
         parcel.readParcelable(Uri::class.java.classLoader),
-        parcel.readString()!!
+        parcel.readString()!!,
+        Date(parcel.readLong())
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -29,6 +33,7 @@ data class FeedPostDataModel(
         parcel.writeString(mainContentText)
         parcel.writeParcelable(imageResId, flags)
         parcel.writeString(username)
+        parcel.writeLong(date.time)
     }
 
     override fun describeContents(): Int {

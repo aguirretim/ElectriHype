@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PostDetailViewActivity : AppCompatActivity() {
 
@@ -33,6 +36,7 @@ class PostDetailViewActivity : AppCompatActivity() {
 
         // Retrieve the data passed from the previous activity
         val selectedItemText = intent.getStringExtra("selectedItemText")
+        val selectedItemDate = intent.getSerializableExtra("selectedItemDate") as Date?
         val selectedItemUsername = intent.getStringExtra("selectedItemUsername")
         val selectedItemLikes = intent.getIntExtra("selectedItemLikes", 0)
         val selectedItemImageId = intent.getIntExtra("selectedItemImageId", 0)
@@ -45,6 +49,7 @@ class PostDetailViewActivity : AppCompatActivity() {
         val postTextView: TextView = findViewById(R.id.tv_post_text)
         val authorTextView: TextView = findViewById(R.id.tv_post_author)
         val likeCountTextView: TextView = findViewById(R.id.tv_like_count)
+        val dateTextView: TextView = findViewById(R.id.tv_dateDetailview)
         val imageView: ImageView = findViewById(R.id.iv_image_for_post)
         val commentRecyclerView: RecyclerView = findViewById(R.id.rv_comment_replies)
 
@@ -52,6 +57,13 @@ class PostDetailViewActivity : AppCompatActivity() {
         postTextView.text = selectedItemText
         authorTextView.text = selectedItemUsername
         likeCountTextView.text = selectedItemLikes.toString()
+
+        if (selectedItemDate != null) {
+            dateTextView.text = formatDate(selectedItemDate).toString()
+        } else {
+            // Handle the case when the date is null
+            dateTextView.text = "Invalid Date"
+        }
 
         if (selectedItemImageUri != null) {
             // Display the image using the URI
@@ -123,6 +135,11 @@ class PostDetailViewActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Failed to fetch comments: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+    private fun formatDate(date: Date?): String {
+        if (date == null) return "" // Handle null date case
+        val dateFormat = SimpleDateFormat("MMMM d h:mm a", Locale.getDefault())
+        return dateFormat.format(date)
     }
 
 }

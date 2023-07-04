@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class FeedPostAdapter (
     private var mList: MutableList<FeedPostDataModel>
@@ -60,6 +63,7 @@ class FeedPostAdapter (
         private val mainContentTextView: TextView = itemView.findViewById(R.id.tv_text_main_content)
         private val imageView: ImageView = itemView.findViewById(R.id.iv_image_main_content)
         private val usernameTextView: TextView = itemView.findViewById(R.id.tv_username)
+        private val dateTextView: TextView = itemView.findViewById(R.id.tv_date)
 
 
 
@@ -68,7 +72,7 @@ class FeedPostAdapter (
             numberOfLikesTextView.text = mainContent.numberOfLikes.toString()
             mainContentTextView.text = mainContent.mainContentText
             usernameTextView.text = mainContent.username
-
+            dateTextView.text = formatDate(mainContent.date).toString()
             imageUri = mainContent.imageResId
 
 
@@ -95,6 +99,7 @@ class FeedPostAdapter (
                     intent.putExtra("selectedItemUsername", selectedItem.username)
                     intent.putExtra("selectedItemLikes", selectedItem.numberOfLikes)
                     intent.putExtra("selectedItemImageUri", imageUri?.toString())
+                    intent.putExtra("selectedItemDate", selectedItem.date)
                     itemView.context.startActivity(intent)
                 }
             }
@@ -107,5 +112,8 @@ class FeedPostAdapter (
         notifyDataSetChanged()
     }
 
-
+    private fun formatDate(date: Date): String {
+        val dateFormat = SimpleDateFormat("MMMM d h:mm a", Locale.getDefault())
+        return dateFormat.format(date)
+    }
 }
