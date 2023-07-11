@@ -47,7 +47,7 @@ class CreateCommentActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true) // Optional: Add back button
 
             // Get reference to the TextView in the custom action bar layout
-            val appHeaderTextView: TextView = customView.findViewById(R.id.tv_app_header)
+            val appHeaderTextView: TextView = customView.findViewById(R.id.tvAppHeader)
 
             appHeaderTextView.text = "Rehype"
             // Customize the TextView as needed
@@ -64,7 +64,7 @@ class CreateCommentActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.header_menu, menu)
-        val menuItem: MenuItem = menu.findItem(R.id.action_button1)
+        val menuItem: MenuItem = menu.findItem(R.id.actionButton1)
         menuItem.title = "Post Your Comment"
         return true
     }
@@ -79,7 +79,7 @@ class CreateCommentActivity : AppCompatActivity() {
 
 
 
-            R.id.action_button1 -> {
+            R.id.actionButton1 -> {
                 // Handle button 1 click
                 val enteredText = textInputEditText.text?.toString()
 

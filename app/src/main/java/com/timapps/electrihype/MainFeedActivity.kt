@@ -1,4 +1,5 @@
 package com.timapps.electrihype
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -12,78 +13,62 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
-import java.net.URI
 import com.google.firebase.firestore.FirebaseFirestore
-
 import com.timapps.electrihype.databinding.ActivityMainFeedBinding
 import java.util.UUID
+import com.google.firebase.storage.FirebaseStorage
+
 
 class MainFeedActivity : AppCompatActivity() {
     private lateinit var adapter: FeedPostAdapter
 
     companion object {
         private const val REQUEST_CREATE_POST = 1
-        private val PICK_IMAGE_REQUEST = 1
+        private const val PICK_IMAGE_REQUEST = 1
     }
 
-    // Firebase Firestore instance
-    val db = FirebaseFirestore.getInstance()
-
+    private val db = FirebaseFirestore.getInstance()
+    val storage = FirebaseStorage.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-
         val binding = ActivityMainFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Get current user information
-        val user_id = FirebaseAuth.getInstance().currentUser!!.uid
+        val user_id = FirebaseAuth.getInstance().currentUser?.uid
         val email_id = FirebaseAuth.getInstance().currentUser?.email
 
-        // Initialize RecyclerView and FloatingActionButton
-        val rv_main_Feed: RecyclerView = binding.rvMainFeed
-        val fab_create_post: FloatingActionButton = binding.fabCreatePost
+        val rvMainFeed: RecyclerView = binding.rvMainFeed
+        val fabCreatePost: FloatingActionButton = binding.fabCreatePost
 
-        // Initialize data list
         val data = ArrayList<FeedPostDataModel>()
 
-        // Utility function to get Uri from drawable resource ID
         fun getDrawableUri(context: Context, drawableResId: Int): Uri? {
             val drawableUriString = "android.resource://${context.packageName}/$drawableResId"
             return Uri.parse(drawableUriString)
         }
 
-        // Example drawable resource ID and Uri
         val drawableResId = R.drawable.pokehype
         val drawableUri = getDrawableUri(this, drawableResId)
 
-        val genratedId = UUID.randomUUID().toString()
+        val generatedId = UUID.randomUUID().toString()
 
-        // Generate sample data
-        val content1 = FeedPostDataModel(genratedId,122, "Why is it everytime I wake up and go to the club. There is always some drama before I go", drawableUri, "@lilpikatest")
-        val content2 = FeedPostDataModel(genratedId,75, "I'm just a player, I'm not a rapper. But when it comes to gaming, I'm a master", null, "@gamerpro")
-        val content3 = FeedPostDataModel(genratedId,51, "In the world of Apex Legends, I'm the champion. No one can defeat me, I reign", null, "@apexking")
+       // val content1 = FeedPostDataModel(generatedId, 122, "Why is it everytime I wake up and go to the club. There is always some drama before I go", drawableUri, "@lilpikatest")
+        val content2 = FeedPostDataModel(generatedId, 75, "I'm just a player, I'm not a rapper. But when it comes to gaming, I'm a master", null, "@gamerpro")
+        val content3 = FeedPostDataModel(generatedId, 51, "In the world of Apex Legends, I'm the champion. No one can defeat me, I reign", null, "@apexking")
 
-        // Add sample data to the list
         data.add(content2)
-        data.add(content1)
+        //data.add(content1)
         data.add(content3)
 
-        // Initialize adapter with empty list
         adapter = FeedPostAdapter(ArrayList())
-        rv_main_Feed.adapter = adapter
+        rvMainFeed.adapter = adapter
 
-        // Call the function to fetch posts from Firestore
         fetchPostsFromFirestore()
 
-        // Create a LinearLayoutManager
         val layoutManager = LinearLayoutManager(this)
+        rvMainFeed.layoutManager = layoutManager
 
-        // Set the layout manager to the RecyclerView
-        rv_main_Feed.layoutManager = layoutManager
-
-        fab_create_post.setOnClickListener{
-            // Start CreatePostActivity for result
+        fabCreatePost.setOnClickListener {
             intent = Intent(this@MainFeedActivity, CreatePostActivity::class.java)
             intent.putExtra("user_id", user_id)
             intent.putExtra("email_id", email_id)
@@ -91,34 +76,41 @@ class MainFeedActivity : AppCompatActivity() {
         }
     }
 
-
-    @Deprecated("Deprecated in Java")
+    // Handle the result of the create post activity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CREATE_POST && resultCode == Activity.RESULT_OK) {
             val newPost = data?.getParcelableExtra<FeedPostDataModel>("newPost")
             if (newPost != null) {
-                // Add the new post to Firestore
-                db.collection("posts")
-                    .add(newPost)
-                    .addOnSuccessListener { documentReference ->
-                        // Handle success
-                        val postId = documentReference.id
-                        Toast.makeText(this, "Post added with ID: $postId", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener { e ->
-                        // Handle error
-                        Toast.makeText(this, "Failed to add post: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                val selectedImageUri = Uri.parse(newPost.imageResId.toString())
 
-                // Add the new post to the adapter
-                adapter.addData(newPost)
-                adapter.notifyDataSetChanged()
-                Toast.makeText(this, "Magical data added", Toast.LENGTH_SHORT).show()
+                // Check if an image was selected
+                if (selectedImageUri != null) {
+                    // Create a child reference in Firebase Storage with a unique filename
+                    val storageRef = storage.reference.child("${System.currentTimeMillis()}.jpg")
+
+                    // Upload the selected image to Firebase Storage
+                    storageRef.putFile(selectedImageUri).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // If upload is successful, get the download URL of the uploaded image
+                            storageRef.downloadUrl.addOnSuccessListener { uri ->
+                                newPost.imageResId = uri // Assign the download URL to imageResId
+                                addPostToFirestore(newPost) // Add the post to Firestore
+                            }.addOnFailureListener { e ->
+                                Toast.makeText(this, "Failed to get download URL: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            Toast.makeText(this, "Failed to upload image: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    addPostToFirestore(newPost) // Add the post to Firestore without an image
+                }
             }
         }
     }
+
 
     private fun fetchPostsFromFirestore() {
         db.collection("posts")
@@ -126,9 +118,26 @@ class MainFeedActivity : AppCompatActivity() {
             .addOnSuccessListener { querySnapshot ->
                 val posts = ArrayList<FeedPostDataModel>()
                 for (document in querySnapshot.documents) {
-                    val post = document.toObject(FeedPostDataModel::class.java)
-                    post?.let {
-                        posts.add(it)
+                    val id = document.id
+                    val numberOfLikes = document.getLong("numberOfLikes") ?: 0
+                    val mainContentText = document.getString("mainContentText") ?: ""
+                    val username = document.getString("username") ?: ""
+                    val date = document.getDate("date")
+                    val imageResId = document.getString("imageResId")
+
+                    // Create a FeedPostDataModel object with the retrieved data
+                    val post = date?.let {
+                        FeedPostDataModel(
+                            id,
+                            numberOfLikes.toInt(),
+                            mainContentText,
+                            imageResId?.toUri(),
+                            username,
+                            it
+                        )
+                    }
+                    if (post != null) {
+                        posts.add(post)
                     }
                 }
                 adapter.setData(posts)
@@ -138,4 +147,27 @@ class MainFeedActivity : AppCompatActivity() {
             }
     }
 
+
+
+    fun ToUri(stringUri: String): Uri {
+        return Uri.parse(stringUri)
+    }
+
+    private fun addPostToFirestore(newPost: FeedPostDataModel) {
+        db.collection("posts")
+            .add(newPost)
+            .addOnSuccessListener { documentReference ->
+                val postId = documentReference.id
+                Toast.makeText(this, "Post added with ID: $postId", Toast.LENGTH_SHORT).show()
+                fetchPostsFromFirestore() // Fetch the updated posts from Firestore
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to add post: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    
+    
 }
+
+

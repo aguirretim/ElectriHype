@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+import com.squareup.picasso.Picasso
 class FeedPostAdapter (
     private var mList: MutableList<FeedPostDataModel>
 ) : RecyclerView.Adapter<FeedPostAdapter.ViewHolder>() {
@@ -79,6 +79,11 @@ class FeedPostAdapter (
 
             // Set the visibility of the ImageView based on the imageResId
             if (imageUri != null) {
+                imageView.visibility = View.VISIBLE
+
+                // Load the image using Picasso
+                Picasso.get().load(mainContent.imageResId).into(imageView)
+
                 imageView.visibility = View.VISIBLE
                 imageView.setImageURI(imageUri)
             } else {

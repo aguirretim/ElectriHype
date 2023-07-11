@@ -8,7 +8,7 @@
     >
 
     <item
-        android:id="@+id/action_button1"
+        android:id="@+id/actionButton1"
         android:title="Post Your ElectriHype"
         android:icon="@drawable/baseline_offline_bolt_24"
         app:showAsAction="always" />
