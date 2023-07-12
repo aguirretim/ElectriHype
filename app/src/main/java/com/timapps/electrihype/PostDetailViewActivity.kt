@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -68,7 +69,10 @@ class PostDetailViewActivity : AppCompatActivity() {
         if (selectedItemImageUri != null) {
             // Display the image using the URI
             imageView.visibility = View.VISIBLE
-            imageView.setImageURI(selectedItemImageUri)
+            // Load the image using Picasso
+            Picasso.get().load(selectedItemImageUri).into(imageView)
+
+            //imageView.setImageURI(selectedItemImageUri)
         } else {
             imageView.visibility = View.GONE
         }
