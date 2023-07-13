@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -82,7 +83,9 @@ class FeedPostAdapter (
                 imageView.visibility = View.VISIBLE
 
                 // Load the image using Picasso
-                Picasso.get().load(mainContent.imageResId).into(imageView)
+                Glide.with(itemView.context)
+                    .load(imageUri)
+                    .into(imageView)
 
                 imageView.visibility = View.VISIBLE
                 imageView.setImageURI(imageUri)
