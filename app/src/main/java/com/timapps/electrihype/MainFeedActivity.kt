@@ -6,12 +6,19 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toUri
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.timapps.electrihype.databinding.ActivityMainFeedBinding
@@ -21,7 +28,9 @@ import com.google.firebase.storage.FirebaseStorage
 
 class MainFeedActivity : AppCompatActivity() {
     private lateinit var adapter: FeedPostAdapter
-
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
+    private lateinit var rvMainFeed: RecyclerView
     companion object {
         private const val REQUEST_CREATE_POST = 1
         private const val PICK_IMAGE_REQUEST = 1
@@ -31,14 +40,20 @@ class MainFeedActivity : AppCompatActivity() {
     val storage = FirebaseStorage.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val binding = ActivityMainFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val user_id = FirebaseAuth.getInstance().currentUser?.uid
         val email_id = FirebaseAuth.getInstance().currentUser?.email
 
-        val rvMainFeed: RecyclerView = binding.rvMainFeed
+         rvMainFeed = binding.rvMainFeed
         val fabCreatePost: FloatingActionButton = binding.fabCreatePost
+
+
+
+        drawerLayout = binding.drawerLayout
+        navigationView = binding.navigationView
 
         val data = ArrayList<FeedPostDataModel>()
 
@@ -73,6 +88,60 @@ class MainFeedActivity : AppCompatActivity() {
             intent.putExtra("user_id", user_id)
             intent.putExtra("email_id", email_id)
             startActivityForResult(intent, REQUEST_CREATE_POST)
+        }
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+
+                R.id.meenu_item1 -> {
+                    // Handle menu item 1 click
+                    fetchPostsFromFirestore()
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+
+                R.id.meenu_item2 -> {
+                    // Handle menu item 2 click
+
+                    // Check if user is signed in (non-null) and update UI accordingly.
+                    val currentUser = FirebaseAuth.getInstance().currentUser
+                    if (currentUser != null) {
+                        val intent = Intent(this@MainFeedActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        intent.putExtra("user_id", currentUser.uid)
+                        intent.putExtra("email_id", currentUser.email)
+                        startActivity(intent)
+                        finish()
+                    }
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer)
+        drawerLayout.addDrawerListener(actionBarDrawerToggle)
+        actionBarDrawerToggle.syncState()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(androidx.constraintlayout.widget.R.drawable.abc_btn_radio_material )
+
+
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START)
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -112,6 +181,8 @@ class MainFeedActivity : AppCompatActivity() {
     }
 
 
+
+
     private fun fetchPostsFromFirestore() {
         db.collection("posts")
             .get()
@@ -146,6 +217,10 @@ class MainFeedActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to fetch posts: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+
+
+
 
 
 
