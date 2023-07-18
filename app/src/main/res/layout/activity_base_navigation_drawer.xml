@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.drawerlayout.widget.DrawerLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/drawerLayoutAll"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".BaseNavigationDrawerActivity"
+    >
+
+<!-- Main Content Layout -->
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Your main content layout goes here -->
+    <!-- Replace this with your actual main content layout for each activity -->
+    <include layout="@layout/activity_main_feed" />
+    <include layout="@layout/activity_main" />
+
+</FrameLayout>
+
+<!-- Navigation Drawer -->
+<com.google.android.material.navigation.NavigationView
+    android:id="@+id/navigationViewAll"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="@android:color/white"
+    app:menu="@menu/menu_main_drawer"> <!-- Set the menu here -->
+
+</com.google.android.material.navigation.NavigationView>
+
+
+
+</androidx.drawerlayout.widget.DrawerLayout>

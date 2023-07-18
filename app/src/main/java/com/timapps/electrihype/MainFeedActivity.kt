@@ -26,7 +26,7 @@ import java.util.UUID
 import com.google.firebase.storage.FirebaseStorage
 
 
-class MainFeedActivity : AppCompatActivity() {
+class MainFeedActivity : BaseNavigationDrawerActivity() {
     private lateinit var adapter: FeedPostAdapter
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -90,6 +90,10 @@ class MainFeedActivity : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CREATE_POST)
         }
 
+
+
+
+
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
 
@@ -120,17 +124,39 @@ class MainFeedActivity : AppCompatActivity() {
             }
         }
 
-        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer)
+        val actionBarDrawerToggle = ActionBarDrawerToggle(this,
+            drawerLayout,
+            R.string.open_drawer,
+            R.string.close_drawer)
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(androidx.constraintlayout.widget.R.drawable.abc_btn_radio_material )
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.baseline_flash_on_24)
 
 
 
     }
+    override fun onMenuItem1Click() {
+        // Handle menu item 1 click
+        // Implement the desired behavior for this activity
+        // Handle menu item 1 click
+        fetchPostsFromFirestore()
+        drawerLayout.closeDrawer(GravityCompat.START)
+    }
 
+    override fun onMenuItem2Click() {
+        // Handle menu item 2 click
+        // Implement the desired behavior for this activity
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val intent = Intent(this@MainFeedActivity, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.putExtra("user_id", currentUser.uid)
+            intent.putExtra("email_id", currentUser.email)
+            startActivity(intent)
+            finish()
+        }}
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -178,6 +204,7 @@ class MainFeedActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
 
 
@@ -241,7 +268,7 @@ class MainFeedActivity : AppCompatActivity() {
             }
     }
 
-    
+
     
 }
 
