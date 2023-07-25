@@ -89,10 +89,7 @@ class MainFeedActivity : BaseNavigationDrawerActivity() {
             intent.putExtra("email_id", email_id)
             startActivityForResult(intent, REQUEST_CREATE_POST)
         }
-
-
-
-
+        
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -237,12 +234,47 @@ class MainFeedActivity : BaseNavigationDrawerActivity() {
                     if (post != null) {
                         posts.add(post)
                     }
+
+
+
                 }
                 adapter.setData(posts)
-            }
+
+
+
+                // Fetch liked status for the current user
+                val currentUser = FirebaseAuth.getInstance().currentUser
+                if (currentUser != null) {
+                    for (post in posts) {
+                        val postReference = db.collection("posts").document(post.id)
+                        postReference.collection("likes").document(currentUser.uid)
+                            .get()
+                            .addOnSuccessListener { documentSnapshot ->
+                                post.isLiked = documentSnapshot.exists()
+                                adapter.notifyDataSetChanged()
+                            }
+                            .addOnFailureListener { e ->
+                                // Handle failure, if any
+                            }
+                    }
+                }
+
+
+
+
+                }
+
+
+
+
+
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Failed to fetch posts: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+
+
+
+
     }
 
 

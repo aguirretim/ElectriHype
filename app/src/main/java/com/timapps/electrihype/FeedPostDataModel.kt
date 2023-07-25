@@ -11,8 +11,8 @@ data class FeedPostDataModel(
     var mainContentText: String,
     var imageResId: Uri?,
     var username: String,
-    val date: Date = Date() // Add the date field with a default value of the current date
-
+    val date: Date = Date(),
+    var isLiked: Boolean = false, // Add a property to track whether the current user has liked this post
 ) : Parcelable {
 
     constructor() : this("", 0, "", null, "")
